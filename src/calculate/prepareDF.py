@@ -4,7 +4,7 @@ import tensorflow as tf
 
 
 def prepareDf(testYear):
-    df = pd.read_json('../db/result.json')
+    df = pd.read_json('../../db/phase5/result.json')
     del df['away_team-name']
     del df['home_name']
     del df['away_name']

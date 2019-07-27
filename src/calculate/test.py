@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
-from src.calculate.prepareDF import prepareDf
+from prepareDF import prepareDf
 
 
 def test(test_year, log_file):

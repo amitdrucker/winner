@@ -1,6 +1,6 @@
 from numpy.random import seed
 
-from src.calculate.prepareDF import prepareDf
+from prepareDF import prepareDf
 
 seed(1)
 from tensorflow import set_random_seed
