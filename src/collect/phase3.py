@@ -7,8 +7,11 @@ def insertRecord(teamName, dataObj, data):
     data[teamName].append(dataObj)
 
 
-def calcScoreDiff(isHome, scoreDiff):
-    return scoreDiff * -1 if not isHome else scoreDiff
+def calcIsWon(isHome, scoreDiff, preDiff):
+    if not isHome:
+        scoreDiff *= -1
+    scoreDiff += preDiff
+    return scoreDiff > 0
 
 
 # 0: below -10
@@ -85,7 +88,7 @@ def removeRedundantFields(dataObj):
     del dataObj['homeWonGames']
     del dataObj['awayWonGames']
     del dataObj['opponent-score']
-    del dataObj['score-diff']
+    # del dataObj['score-diff']
     del dataObj['q1']
     del dataObj['q2']
     del dataObj['q3']
@@ -104,8 +107,9 @@ def run(year):
     data = {}
     for dataObj in currentPhase2Data:
         sortAllPlayers(dataObj)
-        dataObj['is-won'] = calcScoreDiff(dataObj['home-game'], dataObj['score-diff']) > 0
-        dataObj['win-by-diff'] = calcWinDiff(dataObj['home-game'], dataObj['score-diff'])
+        for j in range(-12, 13):
+            dataObj['is-won_' + str(j)] = calcIsWon(dataObj['home-game'], dataObj['score-diff'], j)
+        # dataObj['win-by-diff'] = calcWinDiff(dataObj['home-game'], dataObj['score-diff'])
         removeRedundantFields(dataObj)
         insertRecord(dataObj['team-name'], dataObj, data)
     open('../../db/phase3/%s.json' % year, 'w').write(json.dumps(data))

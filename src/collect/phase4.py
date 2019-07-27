@@ -67,7 +67,10 @@ def run(year):
 
 
 excludedFields = ['home-game', 'team-name', 'date', 'round']
-excludedRemoveFields = ['is-won', 'win-by-diff']
-excludedStdevFields = ['is-won', 'win-by-diff']
+for j in range(-12, 13):
+    if j != 0:
+        excludedFields.append('is-won_' + str(j))
+excludedRemoveFields = ['is-won_0']
+excludedStdevFields = ['is-won_0']
 for i in range(2003, 2020):
     run(str(i))
