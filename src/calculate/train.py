@@ -9,8 +9,8 @@ set_random_seed(2)
 import tensorflow as tf
 
 
-def train(test_year):
-    x_train, x_test, y_train, y_test, x_test_rounds = prepareDf(test_year)
+def train(test_year, preDiff):
+    x_train, x_test, y_train, y_test, x_test_rounds = prepareDf(test_year, preDiff)
     model = tf.keras.models.Sequential()
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
@@ -19,7 +19,7 @@ def train(test_year):
     model.compile(optimizer='adam',
                   loss='sparse_categorical_crossentropy',
                   metrics=['accuracy'])
-    model.fit(x_train, y_train, epochs=160)
+    model.fit(x_train, y_train, epochs=60)
     val_loss, val_acc = model.evaluate(x_test, y_test)
     print(val_acc)
     print(val_loss)

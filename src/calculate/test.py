@@ -4,10 +4,10 @@ import tensorflow as tf
 from prepareDF import prepareDf
 
 
-def test(test_year, log_file):
+def test(test_year, log_file, preDiff):
     log_file['msg'] += 'year %s\n-----------\n' % test_year
     new_model = tf.keras.models.load_model('epic_num_reader.model')
-    x_train, x_test, y_train, y_test, x_test_rounds = prepareDf(test_year)
+    x_train, x_test, y_train, y_test, x_test_rounds = prepareDf(test_year, preDiff)
     predictions = new_model.predict(x_test)
     success = 0
     round_success = 0
