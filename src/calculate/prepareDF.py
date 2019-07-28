@@ -12,6 +12,8 @@ def remove_all_is_won(df, preDiff):
 
 def prepareDf(testYear, preDiff=0):
     df = pd.read_json('../../db/phase5/result.json')
+    del df['home_score-diff-avg']
+    del df['away_score-diff-avg']
     del df['home_team-name']
     del df['away_team-name']
     del df['home_name']
