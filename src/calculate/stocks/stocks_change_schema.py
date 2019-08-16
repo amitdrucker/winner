@@ -1,3 +1,6 @@
+import json
+from datetime import datetime
+
 import pandas as pd
 
 # 1min: Date,Time,BidOpen,BidHigh,BidLow,BidClose,AskOpen,AskHigh,AskLow,AskClose
@@ -6,21 +9,48 @@ import pandas as pd
 import csv
 
 
-def mergeRows(df):
-    for i in range(len(df) - 2, -1, -1):
-        if df.iloc[i]['Time'] == df.iloc[i - 1]['Time']:
-            df.iloc[i - 1]['Low'] = min(df.iloc[i - 1]['Low'], df.iloc[i]['Low'])
-            df.iloc[i - 1]['High'] = max(df.iloc[i - 1]['High'], df.iloc[i]['High'])
-            df.iloc[i - 1]['Volume'] = df.iloc[i]['Volume'] + df.iloc[i - 1]['Volume']
-            df.drop(i)
-    return df
+def get_object_by_index(data, index):
+    return {
+        'Date': data['Date'][index],
+        'Time': data['Time'][index],
+        'High': data['High'][index],
+        'Low': data['Low'][index],
+        'Open': data['Open'][index],
+        'Volume': data['Volume'][index]
+    }
+
+
+def merge_rows(df):
+    json_df = json.loads(df.to_json())
+    new_json = []
+    entry = None
+    keys = json_df['Time'].keys()
+    for index in json_df['Time'].keys():
+        print(str(len(keys) - int(index)))
+        if not entry:
+            entry = get_object_by_index(json_df, index)
+            continue
+        current = get_object_by_index(json_df, index)
+        current_time = datetime.strptime(current['Time'], '%H:%M:%S')
+        entry_time = datetime.strptime(entry['Time'], '%H:%M:%S')
+        if (current_time - entry_time).seconds < 60:
+            entry['Low'] = min(entry['Low'], current['Low'])
+            entry['High'] = max(entry['High'], current['High'])
+            entry['Volume'] = entry['Volume'] + current['Volume']
+        else:
+            new_json.append(entry)
+            entry = current
+    return new_json
 
 
 # f = open('stocks/IVE_tickbidask_2018.csv', 'r')
 df = pd.read_csv('stocks/IVE_tickbidask_2018.csv')
 df = df['09:30:00' < df['Time']]
 df = df[df['Time'] < '16:00:00']
-df = mergeRows(df)
+open('stocks/temp.json', 'w').write(json.dumps(merge_rows(df)))
+df = pd.read_json('stocks/temp.json')
+df.to_cs('stocks/test.csv')
+exit(0)
 entries_back = 20
 for i in range(1, entries_back):
     df['%d-back-max-price-diff-pct' % i] = 0
