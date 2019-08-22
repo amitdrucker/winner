@@ -9,7 +9,7 @@ import json
 
 import pandas as pd
 
-from stocks.utils import to_date_obj
+from stocks.utils import to_date_obj, mean
 
 
 def get_object_by_index(data, index):
@@ -20,6 +20,15 @@ def get_object_by_index(data, index):
         'Low': data['Low'][index],
         'Open': data['Open'][index],
         'Volume': data['Volume'][index]
+    }
+
+
+def create_new_entry(data):
+    return {
+        'Date': data['Date'],
+        'Time': data['Time'],
+        'Value': round(mean(data['Low'], data['High']), 2),
+        'Volume': data['Volume']
     }
 
 
@@ -41,7 +50,7 @@ def merge_rows(df):
             entry['High'] = max(entry['High'], current['High'])
             entry['Volume'] = entry['Volume'] + current['Volume']
         else:
-            new_json.append(entry)
+            new_json.append(create_new_entry(entry))
             entry = current
             entry_time = to_date_obj(entry['Time'])
     return new_json
