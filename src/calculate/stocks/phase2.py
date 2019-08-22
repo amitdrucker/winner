@@ -2,7 +2,7 @@
 
 import json
 
-from stocks.utils import to_date_obj, BATCH_TIME_FRAME_SECONDS, MIN_GAIN
+from stocks.utils import time_to_date_obj, BATCH_TIME_FRAME_SECONDS, MIN_GAIN
 
 
 def check_rise(value, batch, start_index):
@@ -20,10 +20,10 @@ def populate_future_rise_in_batch(batch):
 
 def enrich_rows_min_max(json_data):
     row = json_data[0]
-    entry_time = to_date_obj(row['Time'])
+    entry_time = time_to_date_obj(row['Time'])
     batch = []
     for row in json_data:
-        current_time = to_date_obj(row['Time'])
+        current_time = time_to_date_obj(row['Time'])
         if (current_time - entry_time).seconds >= BATCH_TIME_FRAME_SECONDS:
             populate_future_rise_in_batch(batch)
             entry_time = current_time

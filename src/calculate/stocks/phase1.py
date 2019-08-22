@@ -9,7 +9,7 @@ import json
 
 import pandas as pd
 
-from stocks.utils import to_date_obj, mean
+from stocks.utils import time_to_date_obj, mean
 
 
 def get_object_by_index(data, index):
@@ -41,10 +41,10 @@ def merge_rows(df):
         print(str(len(keys) - int(index)))
         if not entry:
             entry = get_object_by_index(json_df, index)
-            entry_time = to_date_obj(entry['Time'])
+            entry_time = time_to_date_obj(entry['Time'])
             continue
         current = get_object_by_index(json_df, index)
-        current_time = to_date_obj(current['Time'])
+        current_time = time_to_date_obj(current['Time'])
         if (current_time - entry_time).seconds < 60:
             entry['Low'] = min(entry['Low'], current['Low'])
             entry['High'] = max(entry['High'], current['High'])
@@ -52,7 +52,7 @@ def merge_rows(df):
         else:
             new_json.append(create_new_entry(entry))
             entry = current
-            entry_time = to_date_obj(entry['Time'])
+            entry_time = time_to_date_obj(entry['Time'])
     return new_json
 
 
