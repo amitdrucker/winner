@@ -1,4 +1,5 @@
-*.csv
-*.txt
-*.json
-*.pkl
+**/*.csv
+**/*.txt
+**/*.json
+**/*.pkl
+**/*.DS_Store
