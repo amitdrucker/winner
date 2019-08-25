@@ -3,7 +3,7 @@ from datetime import datetime
 # 2 hours
 BATCH_TIME_FRAME_SECONDS = 60 * 60 * 2
 MIN_GAIN = 0.1
-EVENTS_BACK = 20
+EVENTS_BACK = 40
 TRAIN_DATA_MONTHS = 9
 
 

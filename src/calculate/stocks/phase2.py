@@ -16,6 +16,8 @@ def populate_future_rise_in_batch(batch):
     for i in range(0, len(batch) - 1):
         row = batch[i]
         row['Will_Rise'] = check_rise(row['Value'], batch, i + 1)
+    row = batch[len(batch) - 1]
+    row['Will_Rise'] = False
 
 
 def enrich_rows_min_max(json_data):
@@ -29,6 +31,7 @@ def enrich_rows_min_max(json_data):
             entry_time = current_time
             batch = []
         batch.append(row)
+    populate_future_rise_in_batch(batch)
 
 
 def run(year):
