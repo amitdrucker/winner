@@ -64,5 +64,5 @@ def run(year):
     open('data/phase2/%s.json' % year, 'w').write(json.dumps(merged_rows_json))
 
 
-for year in range(2018, 2019):
+for year in range(2015, 2020):
     run(str(year))

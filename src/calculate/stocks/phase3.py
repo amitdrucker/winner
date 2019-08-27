@@ -10,7 +10,7 @@ def add_prev_x(json_data, x):
         row = json_data[i]
         prev_row = json_data[i - x]
         row['prev_%s_value' % str(x)] = prev_row['Value']
-        row['prev_%s_volume' % str(x)] = prev_row['Volume']
+        # row['prev_%s_volume' % str(x)] = prev_row['Volume']
 
 
 def run(year):

@@ -1,22 +1,26 @@
-from datetime import datetime
+import json
 
 import numpy as np
 import pandas as pd
-import tensorflow as tf
+from sklearn.model_selection import train_test_split
+from tensorflow.contrib import keras
 
-from stocks.utils import TRAIN_DATA_MONTHS
+from stocks.utils import print_nans
 
 
-def prepareDf(year):
-    df = pd.read_json('data/phase4/2018.json')
-    train_data_max = datetime.strptime('%s-%s-01' % (str(year), TRAIN_DATA_MONTHS), '%Y-%m-%d')
-    drop_columns_x = ['Will_Rise', 'Date', 'Time']
-    # drop_columns_x = ['Date', 'Time']
+def prepareDf():
+    as_json = json.loads(open('data/phase3/result.json', 'r').read())
+    df = pd.DataFrame(as_json)
+    print_nans(df)
+    df = df.fillna(0)
+    print_nans(df)
+    # train_data_max = datetime.strptime('%s-%s-01' % (str(year), TRAIN_DATA_MONTHS), '%Y-%m-%d')
+    drop_columns_x = ['Will_Rise', 'Date']
+    # drop_columns_x = ['Date']
     keep_column_y = 'Will_Rise'
-    x_train = np.array(df[df['Date'] < train_data_max].drop(columns=drop_columns_x).values, dtype=np.float64)
-    x_test = np.array(df[df['Date'] >= train_data_max].drop(columns=drop_columns_x).values, dtype=np.float64)
-    y_train = np.array(df[df['Date'] < train_data_max][keep_column_y].values, dtype=np.float64)
-    y_test = np.array(df[df['Date'] >= train_data_max][keep_column_y].values, dtype=np.float64)
-    x_train = tf.keras.utils.normalize(x_train, axis=1)
-    x_test = tf.keras.utils.normalize(x_test, axis=1)
+    x = np.array(df.drop(columns=drop_columns_x).values, dtype=np.float64)
+    y = np.array(df[keep_column_y].values, dtype=np.float64)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
+    x_train = keras.utils.normalize(x_train, axis=1)
+    x_test = keras.utils.normalize(x_test, axis=1)
     return x_train, x_test, y_train, y_test

@@ -15,14 +15,14 @@ def report(i, y, z):
     print(i)
 
 
-def train(test_year):
-    x_train, x_test, y_train, y_test = prepareDf(test_year)
+def train():
+    x_train, x_test, y_train, y_test = prepareDf()
     model = ensemble.GradientBoostingRegressor(
-        n_estimators=500,
+        n_estimators=1500,
         learning_rate=0.1,
-        max_depth=6,
-        min_samples_leaf=6,
-        max_features=0.2,
+        max_depth=20,
+        min_samples_leaf=9,
+        max_features=0.5,
         loss='huber',
         random_state=0
     )
