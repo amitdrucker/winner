@@ -1,4 +1,5 @@
 from stocks.stocks_train import train
+# from stocks.multi_output_train import train
 
 logFile = {'msg': ''}
 preDiff = 0
