@@ -12,43 +12,32 @@ def check_rise(value, batch, start_index):
     return False
 
 
-def get_mid(batch):
-    mid_index = round((len(batch) - 1) / 2)
-    mid = batch[mid_index]
-    rise = 0
-    fall = 0
-    values = [batch[0]['Value']]
-    for i in range(1, mid_index):
+def enrich_data(batch):
+    results = []
+    stock = convert_arr_to_pd_stock(batch)
+    for i in range(20, len(batch) - 20):
         row = batch[i]
-        prev_row = batch[i - 1]
-        value = row['Value']
-        if value >= prev_row['Value']:
-            rise += 1
-        else:
-            fall += 1
-        values.append(value)
-
-    stock = convert_arr_to_pd_stock(batch[:mid_index + 1])
-    # from https://pypi.org/project/stockstats/
-    result = {'Will_Rise': check_rise(mid['Value'], batch, mid_index + 1), 'Prev_Rise_Count': rise,
-              'Prev_Fall_Count': fall, 'Date': mid['Date'], 'cr': stock['cr'].iloc[mid_index],
-              'cr-ma1': stock['cr-ma1'].iloc[mid_index], 'cr-ma2': stock['cr-ma2'].iloc[mid_index],
-              'cr-ma3': stock['cr-ma3'].iloc[mid_index], 'kdjk': stock['kdjk'].iloc[mid_index],
-              'kdjd': stock['kdjd'].iloc[mid_index], 'kdjj': stock['kdjj'].iloc[mid_index],
-              'macd': stock['macd'].iloc[mid_index], 'macds': stock['macds'].iloc[mid_index],
-              'macdh': stock['macdh'].iloc[mid_index], 'boll': stock['boll'].iloc[mid_index],
-              'boll_ub': stock['boll_ub'].iloc[mid_index], 'boll_lb': stock['boll_lb'].iloc[mid_index],
-              'rsi_6': stock['rsi_6'].iloc[mid_index], 'rsi_12': stock['rsi_12'].iloc[mid_index],
-              'wr_10': stock['wr_10'].iloc[mid_index], 'wr_6': stock['wr_6'].iloc[mid_index],
-              'cci': stock['cci'].iloc[mid_index], 'cci_20': stock['cci_20'].iloc[mid_index],
-              'tr': stock['tr'].iloc[mid_index], 'atr': stock['atr'].iloc[mid_index],
-              'dma': stock['dma'].iloc[mid_index], 'pdi': stock['pdi'].iloc[mid_index],
-              'mdi': stock['mdi'].iloc[mid_index], 'dx': stock['dx'].iloc[mid_index],
-              'adx': stock['adx'].iloc[mid_index], 'adxr': stock['adxr'].iloc[mid_index],
-              'trix': stock['trix'].iloc[mid_index], 'trix_9_sma': stock['trix_9_sma'].iloc[mid_index],
-              'tema': stock['tema'].iloc[mid_index], 'vr': stock['vr'].iloc[mid_index],
-              'vr_6_sma': stock['vr_6_sma'].iloc[mid_index]}
-    return result
+        # from https://pypi.org/project/stockstats/
+        result = {'Will_Rise': check_rise(row['Value'], batch, i + 1),
+                  'Date': row['Date'], 'Month': row['Date'][0:2], 'cr': stock['cr'].iloc[i],
+                  'cr-ma1': stock['cr-ma1'].iloc[i], 'cr-ma2': stock['cr-ma2'].iloc[i],
+                  'cr-ma3': stock['cr-ma3'].iloc[i], 'kdjk': stock['kdjk'].iloc[i],
+                  'kdjd': stock['kdjd'].iloc[i], 'kdjj': stock['kdjj'].iloc[i],
+                  'macd': stock['macd'].iloc[i], 'macds': stock['macds'].iloc[i],
+                  'macdh': stock['macdh'].iloc[i], 'boll': stock['boll'].iloc[i],
+                  'boll_ub': stock['boll_ub'].iloc[i], 'boll_lb': stock['boll_lb'].iloc[i],
+                  'rsi_6': stock['rsi_6'].iloc[i], 'rsi_12': stock['rsi_12'].iloc[i],
+                  'wr_10': stock['wr_10'].iloc[i], 'wr_6': stock['wr_6'].iloc[i],
+                  'cci': stock['cci'].iloc[i], 'cci_20': stock['cci_20'].iloc[i],
+                  'tr': stock['tr'].iloc[i], 'atr': stock['atr'].iloc[i],
+                  'dma': stock['dma'].iloc[i], 'pdi': stock['pdi'].iloc[i],
+                  'mdi': stock['mdi'].iloc[i], 'dx': stock['dx'].iloc[i],
+                  'adx': stock['adx'].iloc[i], 'adxr': stock['adxr'].iloc[i],
+                  'trix': stock['trix'].iloc[i], 'trix_9_sma': stock['trix_9_sma'].iloc[i],
+                  'tema': stock['tema'].iloc[i], 'vr': stock['vr'].iloc[i],
+                  'vr_6_sma': stock['vr_6_sma'].iloc[i]}
+        results.append(result)
+    return results
 
 
 def transform_to_mid(json_data):
@@ -63,12 +52,12 @@ def transform_to_mid(json_data):
         current_time = time_to_date_obj(row['Time'])
         if (current_time - entry_time).seconds >= BATCH_TIME_FRAME_SECONDS:
             if len(batch) > 40:
-                result.append(get_mid(batch))
+                result += enrich_data(batch)
             entry_time = current_time
             batch = []
         batch.append(row)
     if len(batch) > 40:
-        result.append(get_mid(batch))
+        result += enrich_data(batch)
     return result
 
 

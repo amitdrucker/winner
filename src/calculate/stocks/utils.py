@@ -6,6 +6,8 @@ import pandas as pd
 from stockstats import StockDataFrame
 
 BATCH_TIME_FRAME_SECONDS = 60 * 60 * 2
+TEST_MONTHS = ['03', '06', '09', '12']
+TRAIN_MONTHS = ['01', '02', '04', '05', '07', '08', '10', '11']
 MIN_GAIN = 0.1
 EVENTS_BACK = 3
 TRAIN_DATA_MONTHS = 10
@@ -14,7 +16,7 @@ TRAIN_DATA_MONTHS = 10
 def print_nans(df):
     print('NaNs:')
     for col in df.columns:
-        if col != 'Date':
+        if col != 'Date' and col != 'Month':
             indexes = df[col].index[df[col].apply(np.isnan)]
             if len(indexes) > 0:
                 print(col + ', ' + str(len(indexes)))
