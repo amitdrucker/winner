@@ -4,7 +4,7 @@ from numpy.random import seed
 from sklearn import ensemble
 from sklearn.metrics import mean_absolute_error
 
-from stocks.stocks_prepareDF import prepareDf
+from stocks.stocks_prepareDF import prepare_df_for_train
 
 seed(1)
 tensorflow.compat.v1.set_random_seed(2)
@@ -15,7 +15,7 @@ def report(i, y, z):
 
 
 def train():
-    x_train, x_test, y_train, y_test = prepareDf()
+    x_train, x_test, y_train, y_test = prepare_df_for_train()
     model = ensemble.GradientBoostingRegressor(
         n_estimators=20000,
         learning_rate=0.1,

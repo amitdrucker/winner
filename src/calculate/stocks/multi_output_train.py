@@ -7,7 +7,7 @@ from sklearn.multioutput import MultiOutputRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 
-from stocks.stocks_prepareDF import prepareDf
+from stocks.stocks_prepareDF import prepare_df_for_train
 
 seed(1)
 tensorflow.compat.v1.set_random_seed(2)
@@ -18,7 +18,7 @@ def report(i, y, z):
 
 
 def train():
-    x_train, x_test, y_train, y_test = prepareDf()
+    x_train, x_test, y_train, y_test = prepare_df_for_train()
     ESTIMATORS = {
         "Extra trees": ExtraTreesRegressor(n_estimators=10,
                                            max_features=32,  # Out of 20000

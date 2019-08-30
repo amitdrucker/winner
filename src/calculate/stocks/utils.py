@@ -16,7 +16,7 @@ TRAIN_DATA_MONTHS = 10
 def print_nans(df):
     print('NaNs:')
     for col in df.columns:
-        if col != 'Date' and col != 'Month':
+        if col != 'Date' and col != 'Month' and col != 'Batch_ID':
             indexes = df[col].index[df[col].apply(np.isnan)]
             if len(indexes) > 0:
                 print(col + ', ' + str(len(indexes)))
